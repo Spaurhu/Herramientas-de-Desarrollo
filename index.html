@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contador de Caracteres v4 Ultimate</title>
+    <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>🚀 Analizador de Texto Ultimate</h2>
+            <p>La herramienta más avanzada para análisis de caracteres y texto</p>
+        </div>
+
+        <div class="content">
+            <div class="mode-selector">
+                <div class="mode-btn active" onclick="switchMode('simple')">🎯 Búsqueda Simple</div>
+                <div class="mode-btn" onclick="switchMode('advanced')">📊 Análisis Avanzado</div>
+                <div class="mode-btn" onclick="switchMode('comparison')">⚖️ Comparación</div>
+                <div class="mode-btn" onclick="switchMode('pattern')">🔍 Patrones</div>
+                <div class="mode-btn" onclick="switchMode('history')">📋 Historial</div>
+            </div>
+
+            <div id="simple-mode" class="mode-content">
+                <div class="workspace">
+                    <div class="input-group">
+                        <label for="texto-simple">📝 Texto a analizar:</label>
+                        <textarea id="texto-simple" placeholder="Ingresa tu texto aquí... Puedes pegar desde el portapapeles con Ctrl+V"></textarea>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="caracter-simple">🎯 Carácter a buscar:</label>
+                        <input type="text" id="caracter-simple" maxlength="1" placeholder="e">
+                    </div>
+
+                    <div class="controls">
+                        <button class="btn" onclick="analizarSimple()">🔍 Analizar</button>
+                        <button class="btn success" onclick="contarTodosCaracteres()">📊 Todos los caracteres</button>
+                        <button class="btn info" onclick="analizarPalabras()">📚 Análisis de palabras</button>
+                        <button class="btn danger" onclick="limpiarSimple()">🗑️ Limpiar</button>
+                    </div>
+
+                    <div class="results-section">
+                        <div id="resultado-simple" class="result-card main-result">
+                            🎯 Ingresa texto y un carácter para comenzar el análisis
+                        </div>
+                        <div class="stats-grid" id="stats-simple" style="display: none;"></div>
+                        <div class="visualization" id="viz-simple" style="display: none;">
+                            <h3>📈 Visualización del texto</h3>
+                            <div id="text-highlight"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="advanced-mode" class="mode-content" style="display: none;">
+                <div class="workspace">
+                    <div class="input-group">
+                        <label for="texto-avanzado">📊 Texto para análisis completo:</label>
+                        <textarea id="texto-avanzado" placeholder="Pega aquí textos largos para análisis detallado..."></textarea>
+                    </div>
+
+                    <div class="controls">
+                        <button class="btn" onclick="analizarCompleto()">🚀 Análisis Completo</button>
+                        <button class="btn success" onclick="generarReporte()">📋 Generar Reporte</button>
+                        <button class="btn info" onclick="exportarDatos()">💾 Exportar</button>
+                        <button class="btn danger" onclick="limpiarAvanzado()">🗑️ Limpiar</button>
+                    </div>
+
+                    <div class="results-section">
+                        <div id="resultado-avanzado" class="result-card main-result">
+                            📊 Realiza un análisis completo de tu texto
+                        </div>
+                        <div class="visualization" id="frecuencias-viz" style="display: none;">
+                            <h3>📈 Frecuencia de Caracteres</h3>
+                            <div id="frequency-chart"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="comparison-mode" class="mode-content" style="display: none;">
+                <div class="workspace">
+                    <div class="comparison-mode">
+                        <div>
+                            <label for="texto1">📝 Primer texto:</label>
+                            <textarea id="texto1" placeholder="Primer texto a comparar..."></textarea>
+                        </div>
+                        <div>
+                            <label for="texto2">📝 Segundo texto:</label>
+                            <textarea id="texto2" placeholder="Segundo texto a comparar..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <button class="btn" onclick="compararTextos()">⚖️ Comparar</button>
+                        <button class="btn danger" onclick="limpiarComparacion()">🗑️ Limpiar</button>
+                    </div>
+
+                    <div id="resultado-comparacion" class="result-card main-result">
+                        ⚖️ Compara dos textos para ver diferencias y similitudes
+                    </div>
+                </div>
+            </div>
+
+            <div id="pattern-mode" class="mode-content" style="display: none;">
+                <div class="workspace">
+                    <div class="input-group">
+                        <label for="texto-patrones">🔍 Texto para buscar patrones:</label>
+                        <textarea id="texto-patrones" placeholder="Ingresa texto para buscar patrones..."></textarea>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="patron">🎯 Patrón a buscar (expresión regular):</label>
+                        <input type="text" id="patron" placeholder="[0-9]+ | [a-zA-Z]+ | \w{3,}">
+                    </div>
+
+                    <div class="controls">
+                        <button class="btn" onclick="buscarPatrones()">🔍 Buscar Patrones</button>
+                        <button class="btn success" onclick="patronesComunes()">📋 Patrones Comunes</button>
+                        <button class="btn danger" onclick="limpiarPatrones()">🗑️ Limpiar</button>
+                    </div>
+
+                    <div id="resultado-patrones" class="result-card main-result">
+                        🔍 Busca patrones específicos usando expresiones regulares
+                    </div>
+                </div>
+            </div>
+
+            <div id="history-mode" class="mode-content" style="display: none;">
+                <div class="workspace">
+                    <div class="controls">
+                        <button class="btn info" onclick="exportarHistorial()">💾 Exportar Historial</button>
+                        <button class="btn danger" onclick="limpiarHistorial()">🗑️ Limpiar Todo</button>
+                    </div>
+
+                    <div class="history-panel" id="panel-historial">
+                        <p style="text-align: center; color: #666; padding: 40px;">
+                            📋 No hay análisis en el historial
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-reporte" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarModal()">&times;</span>
+            <h2>📋 Reporte de Análisis</h2>
+            <div id="contenido-reporte"></div>
+            <div class="export-options">
+                <button class="btn info" onclick="copiarReporte()">📋 Copiar</button>
+                <button class="btn success" onclick="descargarReporte()">💾 Descargar</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
