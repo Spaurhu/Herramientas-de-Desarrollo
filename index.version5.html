@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contador de Caracteres v4 Ultimate</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .header h2 {
+            font-size: 3.2em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            z-index: 1;
+            position: relative;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.3em;
+            z-index: 1;
+            position: relative;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .mode-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+
+        .mode-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 15px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+        }
+
+        .mode-btn.active {
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .mode-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .workspace {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+            font-family: inherit;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 25px rgba(102, 126, 234, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.6s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn.success {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+
+        .btn.danger {
+            background: linear-gradient(135deg, #dc3545, #fd7e14);
+        }
+
+        .btn.info {
+            background: linear-gradient(135deg, #17a2b8, #6f42c1);
+        }
+
+        .btn.warning {
+            background: linear-gradient(135deg, #ffc107, #fd7e14);
+        }
+
+        .results-section {
+            display: grid;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .main-result {
+            text-align: center;
+            font-size: 1.2em;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border: 2px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border-left: 5px solid #667eea;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 1em;
+            margin-top: 8px;
+            font-weight: 600;
+        }
+
+        .visualization {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            margin-top: 20px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 20px 0;
+        }
+
+        .freq-bar {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .freq-bar:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .freq-char {
+            min-width: 40px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1.2em;
+        }
+
+        .freq-visual {
+            flex: 1;
+            height: 20px;
+            background: #eee;
+            border-radius: 10px;
+            margin: 0 15px;
+            overflow: hidden;
+        }
+
+        .freq-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 10px;
+            transition: width 0.8s ease-in-out;
+            position: relative;
+        }
+
+        .freq-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            animation: barShimmer 2s infinite;
+        }
+
+        @keyframes barShimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .freq-count {
+            min-width: 80px;
+            text-align: right;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .highlight-text {
+            background: rgba(255, 235, 59, 0.3);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            line-height: 1.8;
+            border: 2px solid rgba(255, 235, 59, 0.5);
+            word-break: break-all;
+        }
+
+        .comparison-mode {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .comparison-result {
+            background: linear-gradient(135deg, rgba(40, 167, 69, 0.1), rgba(32, 201, 151, 0.1));
+            border: 2px solid rgba(40, 167, 69, 0.3);
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .history-panel {
+            max-height: 400px;
+            overflow-y: auto;
+            background: rgba(248, 249, 250, 0.8);
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .history-item {
+            background: white;
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .history-item:hover {
+            transform: translateX(10px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .export-options {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            animation: modalSlideIn 0.5s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .comparison-mode {
+                grid-template-columns: 1fr;
+            }
+
+            .mode-selector {
+                flex-direction: column;
+            }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>🚀 Analizador de Texto Ultimate</h2>
+            <p>La herramienta más avanzada para análisis de caracteres y texto</p>
+        </div>
+
+        <div class="content">
+            <div class="mode-selector">
+                <div class="mode-btn active" onclick="switchMode('simple')">🎯 Búsqueda Simple</div>
+                <div class="mode-btn" onclick="switchMode('advanced')">📊 Análisis Avanzado</div>
+                <div class="mode-btn" onclick="switchMode('comparison')">⚖️ Comparación</div>
+                <div class="mode-btn" onclick="switchMode('pattern')">🔍 Patrones</div>
+                <div class="mode-btn" onclick="switchMode('history')">📋 Historial</div>
+            </div>
+
+            <!-- Modo Simple -->
+            <div id="simple-mode" class="mode-content">
+                <div class="workspace">
+                    <div class="input-group">
+                        <label for="texto-simple">📝 Texto a analizar:</label>
+                        <textarea id="texto-simple" placeholder="Ingresa tu texto aquí... Puedes pegar desde el portapapeles con Ctrl+V"></textarea>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="caracter-simple">🎯 Carácter a buscar:</label>
+                        <input type="text" id="caracter-simple" maxlength="1" placeholder="e">
+                    </div>
+
+                    <div class="controls">
+                        <button class="btn" onclick="analizarSimple()">🔍 Analizar</button>
+                        <button class="btn success" onclick="contarTodosCaracteres()">📊 Todos los caracteres</button>
+                        <button class="btn info" onclick="analizarPalabras()">📚 Análisis de palabras</button>
+                        <button class="btn danger" onclick="limpiarSimple()">🗑️ Limpiar</button>
+                    </div>
+
+                    <div class="results-section">
+                        <div id="resultado-simple" class="result-card main-result">
+                            🎯 Ingresa texto y un carácter para comenzar el análisis
+                        </div>
+                        <div class="stats-grid" id="stats-simple" style="display: none;"></div>
+                        <div class="visualization" id="viz-simple" style="display: none;">
+                            <h3>📈 Visualización del texto</h3>
+                            <div id="text-highlight"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modo Avanzado -->
+            <div id="advanced-mode" class="mode-content" style="display: none;">
+                <div class="workspace">
+                    <div class="input-group">
+                        <label for="texto-avanzado">📊 Texto para análisis completo:</label>
+                        <textarea id="texto-avanzado" placeholder="Pega aquí textos largos para análisis detallado..."></textarea>
+                    </div>
+
+                    <div class="controls">
+                        <button class="btn" onclick="analizarCompleto()">🚀 Análisis Completo</button>
+                        <button class="btn success" onclick="generarReporte()">📋 Generar Reporte</button>
+                        <button class="btn info" onclick="exportarDatos()">💾 Exportar</button>
+                        <button class="btn danger" onclick="limpiarAvanzado()">🗑️ Limpiar</button>
+                    </div>
+
+                    <div class="results-section">
+                        <div id="resultado-avanzado" class="result-card main-result">
+                            📊 Realiza un análisis completo de tu texto
+                        </div>
+                        <div class="visualization" id="frecuencias-viz" style="display: none;">
+                            <h3>📈 Frecuencia de Caracteres</h3>
+                            <div id="frequency-chart"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modo Comparación -->
+            <div id="comparison-mode" class="mode-content" style="display: none;">
+                <div class="workspace">
+                    <div class="comparison-mode">
+                        <div>
+                            <label for="texto1">📝 Primer texto:</label>
+                            <textarea id="texto1" placeholder="Primer texto a comparar..."></textarea>
+                        </div>
+                        <div>
+                            <label for="texto2">📝 Segundo texto:</label>
+                            <textarea id="texto2" placeholder="Segundo texto a comparar..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <button class="btn" onclick="compararTextos()">⚖️ Comparar</button>
+                        <button class="btn danger" onclick="limpiarComparacion()">🗑️ Limpiar</button>
+                    </div>
+
+                    <div id="resultado-comparacion" class="result-card main-result">
+                        ⚖️ Compara dos textos para ver diferencias y similitudes
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modo Patrones -->
+            <div id="pattern-mode" class="mode-content" style="display: none;">
+                <div class="workspace">
+                    <div class="input-group">
+                        <label for="texto-patrones">🔍 Texto para buscar patrones:</label>
+                        <textarea id="texto-patrones" placeholder="Ingresa texto para buscar patrones..."></textarea>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="patron">🎯 Patrón a buscar (expresión regular):</label>
+                        <input type="text" id="patron" placeholder="[0-9]+ | [a-zA-Z]+ | \w{3,}">
+                    </div>
+
+                    <div class="controls">
+                        <button class="btn" onclick="buscarPatrones()">🔍 Buscar Patrones</button>
+                        <button class="btn success" onclick="patronesComunes()">📋 Patrones Comunes</button>
+                        <button class="btn danger" onclick="limpiarPatrones()">🗑️ Limpiar</button>
+                    </div>
+
+                    <div id="resultado-patrones" class="result-card main-result">
+                        🔍 Busca patrones específicos usando expresiones regulares
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modo Historial -->
+            <div id="history-mode" class="mode-content" style="display: none;">
+                <div class="workspace">
+                    <div class="controls">
+                        <button class="btn info" onclick="exportarHistorial()">💾 Exportar Historial</button>
+                        <button class="btn danger" onclick="limpiarHistorial()">🗑️ Limpiar Todo</button>
+                    </div>
+
+                    <div class="history-panel" id="panel-historial">
+                        <p style="text-align: center; color: #666; padding: 40px;">
+                            📋 No hay análisis en el historial
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Reporte -->
+    <div id="modal-reporte" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarModal()">&times;</span>
+            <h2>📋 Reporte de Análisis</h2>
+            <div id="contenido-reporte"></div>
+            <div class="export-options">
+                <button class="btn info" onclick="copiarReporte()">📋 Copiar</button>
+                <button class="btn success" onclick="descargarReporte()">💾 Descargar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let historialAnalisis = [];
+        let modoActual = 'simple';
+
+        // Función recursiva original
+        function contarLetra(cadena, letra) {
+            if (cadena.length === 0) {
+                return 0;
+            }
+            if (cadena[0].toLowerCase() === letra.toLowerCase()) {
+                return 1 + contarLetra(cadena.slice(1), letra);
+            } else {
+                return contarLetra(cadena.slice(1), letra);
+            }
+        }
+
+        function switchMode(modo) {
+            // Actualizar botones
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Ocultar todos los modos
+            document.querySelectorAll('.mode-content').forEach(content => content.style.display = 'none');
+
+            // Mostrar modo seleccionado
+            document.getElementById(modo + '-mode').style.display = 'block';
+            modoActual = modo;
+        }
+
+        function agregarAlHistorial(tipo, datos, resultado) {
+            const analisis = {
+                id: Date.now(),
+                fecha: new Date().toLocaleString(),
+                tipo: tipo,
+                datos: datos,
+                resultado: resultado,
+                timestamp: Date.now()
+            };
+            
+            historialAnalisis.unshift(analisis);
+            if (historialAnalisis.length > 50) historialAnalisis.pop();
+            
+            actualizarHistorial();
+            guardarHistorialLocal();
+        }
+
+        function actualizarHistorial() {
+            const panel = document.getElementById('panel-historial');
+            
+            if (historialAnalisis.length === 0) {
+                panel.innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">📋 No hay análisis en el historial</p>';
+                return;
+            }
+
+            panel.innerHTML = historialAnalisis.map(item => `
+                <div class="history-item">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <span style="font-weight: 600; color: #667eea;">${item.tipo}</span>
+                        <span style="font-size: 0.9em; color: #666;">${item.fecha}</span>
+                    </div>
+                    <div style="background: #f8f9fa; padding: 10px; border-radius: 8px; margin: 5px 0;">
+                        <strong>Datos:</strong> ${JSON.stringify(item.datos).substring(0, 100)}...
+                    </div>
+                    <div style="color: #28a745; font-weight: 600;">
+                        <strong>Resultado:</strong> ${item.resultado}
+                    </div>
+                    <button class="btn" style="padding: 5px 15px; font-size: 12px; margin-top: 10px;" onclick="reutilizarAnalisis(${item.id})">🔄 Reutilizar</button>
+                </div>
+            `).join('');
+        }
+
+        function reutilizarAnalisis(id) {
+            const analisis = historialAnalisis.find(item => item.id === id);
+            if (!analisis) return;
+
+            if (analisis.tipo === 'Búsqueda Simple') {
+                switchMode('simple');
+                document.getElementById('texto-simple').value = analisis.datos.texto;
+                document.getElementById('caracter-simple').value = analisis.datos.caracter;
+                setTimeout(() => analizarSimple(), 100);
+            }
+        }
+
+        function analizarSimple() {
+            const texto = document.getElementById('texto-simple').value;
+            const caracter = document.getElementById('caracter-simple').value;
+            const resultado = document.getElementById('resultado-simple');
+
+            if (!texto.trim()) {
+                mostrarResultado(resultado, "⚠️ Por favor, ingresa un texto.", "error");
+                return;
+            }
+
+            if (caracter.length !== 1) {
+                mostrarResultado(resultado, "⚠️ Por favor, ingresa solo un carácter.", "error");
+                return;
+            }
+
+            // Mostrar loading
+            resultado.innerHTML = '<div class="loading"></div> Analizando...';
+            
+            setTimeout(() => {
+                const cantidad = contarLetra(texto, caracter);
+                const porcentaje = ((cantidad / texto.length) * 100).toFixed(2);
+                
+                const resultadoTexto = `
+                    <div style="font-size: 1.5em; margin-bottom: 15px;">
+                        ✅ Encontradas <strong>${cantidad}</strong> ocurrencias del carácter '<strong>${caracter}</strong>'
+                    </div>
+                    <div style="font-size: 1.1em; color: #666;">
+                        Representa el ${porcentaje}% del texto total
+                    </div>
+                `;
+
+                mostrarResultado(resultado, resultadoTexto, "success");
+                mostrarEstadisticasSimple(texto, caracter, cantidad);
+                mostrarVisualizacion(texto, caracter);
+                
+                agregarAlHistorial('Búsqueda Simple', {texto: texto.substring(0, 50), caracter}, `${cantidad} ocurrencias (${porcentaje}%)`);
+            }, 500);
+        }
+
+        function mostrarResultado(elemento, contenido, tipo) {
+            elemento.innerHTML = contenido;
+            elemento.className = `result-card main-result ${tipo}`;
+        }
+
+        function mostrarEstadisticasSimple(texto, caracter, cantidad) {
+            const stats = {
+                caracteres: texto.length,
+                palabras: texto.trim().split(/\s+/).filter(word => word.length > 0).length,
+                lineas: texto.split('\n').length,
+                sinEspacios: texto.replace(/\s/g, '').length,
+                porcentaje: ((cantidad / texto.length) * 100).toFixed(2)
+            };
+
+            const statsHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${cantidad}</div>
+                    <div class="stat-label">Ocurrencias</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${stats.caracteres}</div>
+                    <div class="stat-label">Total caracteres</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${stats.palabras}</div>
+                    <div class="stat-label">Palabras</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${stats.lineas}</div>
+                    <div class="stat-label">Líneas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${stats.porcentaje}%</div>
+                    <div class="stat-label">Porcentaje</div>
+                </div>
+            `;
+
+            document.getElementById('stats-simple').innerHTML = statsHTML;
+            document.getElementById('stats-simple').style.display = 'grid';
+        }
+
+        function mostrarVisualizacion(texto, caracter) {
+            const resaltado = texto.replace(
+                new RegExp(caracter.replace(/[.*+?^${}()|[\]\\]/g, '\\                        <button class="btn success" onclick="patronesCom'), 'gi'),
+                `<mark style="background: #ffeb3b; padding: 2px 4px; border-radius: 3px; font-weight: bold;">${caracter}</mark>`
+            );
+
+            document.getElementById('text-highlight').innerHTML = `
+                <div class="highlight-text">${resaltado}</div>
+            `;
+            document.getElementById('viz-simple').style.display = 'block';
+        }
+
+        function contarTodosCaracteres() {
+            const texto = document.getElementById('texto-simple').value;
+            
+            if (!texto.trim()) {
+                mostrarResultado(document.getElementById('resultado-simple'), "⚠️ Por favor, ingresa un texto.", "error");
+                return;
+            }
+
+            const frecuencias = {};
+            const textoSinEspacios = texto.replace(/\s/g, '');
+            
+            for (let char of textoSinEspacios.toLowerCase()) {
+                frecuencias[char] = (frecuencias[char] || 0) + 1;
+            }
+
+            const sorted = Object.entries(frecuencias).sort((a, b) => b[1] - a[1]);
+            const top10 = sorted.slice(0, 10);
+
+            let resultadoHTML = '<h3>🏆 Top 10 caracteres más frecuentes:</h3><br>';
+            top10.forEach(([char, count], index) => {
+                const percentage = ((count / textoSinEspacios.length) * 100).toFixed(1);
+                const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '🔹';
+                resultadoHTML += `${medal} '${char}': ${count} veces (${percentage}%)<br>`;
+            });
+
+            mostrarResultado(document.getElementById('resultado-simple'), resultadoHTML, "success");
+            
+            agregarAlHistorial('Conteo Completo', {texto: texto.substring(0, 50)}, `${sorted.length} caracteres únicos`);
+        }
+
+        function analizarPalabras() {
+            const texto = document.getElementById('texto-simple').value;
+            
+            if (!texto.trim()) {
+                mostrarResultado(document.getElementById('resultado-simple'), "⚠️ Por favor, ingresa un texto.", "error");
+                return;
+            }
+
+            const palabras = texto.toLowerCase().match(/\b\w+\b/g) || [];
+            const frecuenciaPalabras = {};
+            
+            palabras.forEach(palabra => {
+                frecuenciaPalabras[palabra] = (frecuenciaPalabras[palabra] || 0) + 1;
+            });
+
+            const sorted = Object.entries(frecuenciaPalabras).sort((a, b) => b[1] - a[1]);
+            const top10 = sorted.slice(0, 10);
+
+            let resultadoHTML = '<h3>📚 Top 10 palabras más frecuentes:</h3><br>';
+            top10.forEach(([palabra, count], index) => {
+                const percentage = ((count / palabras.length) * 100).toFixed(1);
+                const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '🔹';
+                resultadoHTML += `${medal} "${palabra}": ${count} veces (${percentage}%)<br>`;
+            });
+
+            mostrarResultado(document.getElementById('resultado-simple'), resultadoHTML, "success");
+            
+            agregarAlHistorial('Análisis de Palabras', {texto: texto.substring(0, 50)}, `${palabras.length} palabras, ${sorted.length} únicas`);
+        }
+
+        function analizarCompleto() {
+            const texto = document.getElementById('texto-avanzado').value;
+            
+            if (!texto.trim()) {
+                mostrarResultado(document.getElementById('resultado-avanzado'), "⚠️ Por favor, ingresa un texto.", "error");
+                return;
+            }
+
+            document.getElementById('resultado-avanzado').innerHTML = '<div class="loading"></div> Realizando análisis completo...';
+
+            setTimeout(() => {
+                const stats = analizarTextoCompleto(texto);
+                
+                const resultadoHTML = `
+                    <h3>✅ Análisis Completo Finalizado</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 2em; font-weight: bold; color: #667eea;">${stats.caracteres}</div>
+                            <div>Total caracteres</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 2em; font-weight: bold; color: #28a745;">${stats.palabras}</div>
+                            <div>Total palabras</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 2em; font-weight: bold; color: #dc3545;">${stats.caracteresUnicos}</div>
+                            <div>Caracteres únicos</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 2em; font-weight: bold; color: #ffc107;">${stats.lineas}</div>
+                            <div>Total líneas</div>
+                        </div>
+                    </div>
+                `;
+
+                mostrarResultado(document.getElementById('resultado-avanzado'), resultadoHTML, "success");
+                mostrarGraficoFrecuencias(stats.frecuencias);
+                
+                agregarAlHistorial('Análisis Completo', {texto: texto.substring(0, 50)}, `${stats.caracteres} chars, ${stats.palabras} palabras`);
+            }, 800);
+        }
+
+        function analizarTextoCompleto(texto) {
+            const frecuencias = {};
+            const textoSinEspacios = texto.replace(/\s/g, '');
+            
+            for (let char of textoSinEspacios.toLowerCase()) {
+                frecuencias[char] = (frecuencias[char] || 0) + 1;
+            }
+
+            const palabras = texto.toLowerCase().match(/\b\w+\b/g) || [];
+
+            return {
+                caracteres: texto.length,
+                caracteresUnicos: Object.keys(frecuencias).length,
+                palabras: palabras.length,
+                lineas: texto.split('\n').length,
+                frecuencias: frecuencias
+            };
+        }
+
+        function mostrarGraficoFrecuencias(frecuencias) {
+            const sorted = Object.entries(frecuencias).sort((a, b) => b[1] - a[1]);
+            const maxCount = Math.max(...Object.values(frecuencias));
+            
+            const chartHTML = sorted.slice(0, 20).map(([char, count]) => {
+                const percentage = ((count / Object.values(frecuencias).reduce((a, b) => a + b, 0)) * 100).toFixed(1);
+                const width = (count / maxCount) * 100;
+                
+                return `
+                    <div class="freq-bar">
+                        <div class="freq-char">'${char}'</div>
+                        <div class="freq-visual">
+                            <div class="freq-fill" style="width: ${width}%"></div>
+                        </div>
+                        <div class="freq-count">${count} (${percentage}%)</div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('frequency-chart').innerHTML = chartHTML;
+            document.getElementById('frecuencias-viz').style.display = 'block';
+        }
+
+        function compararTextos() {
+            const texto1 = document.getElementById('texto1').value;
+            const texto2 = document.getElementById('texto2').value;
+            
+            if (!texto1.trim() || !texto2.trim()) {
+                mostrarResultado(document.getElementById('resultado-comparacion'), "⚠️ Por favor, ingresa ambos textos.", "error");
+                return;
+            }
+
+            const stats1 = analizarTextoCompleto(texto1);
+            const stats2 = analizarTextoCompleto(texto2);
+
+            const similitud = calcularSimilitud(texto1, texto2);
+
+            const resultadoHTML = `
+                <h3>⚖️ Comparación de Textos</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px;">
+                    <div class="comparison-result">
+                        <h4>📝 Texto 1</h4>
+                        <p>Caracteres: ${stats1.caracteres}</p>
+                        <p>Palabras: ${stats1.palabras}</p>
+                        <p>Líneas: ${stats1.lineas}</p>
+                        <p>Únicos: ${stats1.caracteresUnicos}</p>
+                    </div>
+                    <div class="comparison-result">
+                        <h4>📝 Texto 2</h4>
+                        <p>Caracteres: ${stats2.caracteres}</p>
+                        <p>Palabras: ${stats2.palabras}</p>
+                        <p>Líneas: ${stats2.lineas}</p>
+                        <p>Únicos: ${stats2.caracteresUnicos}</p>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 20px; padding: 20px; background: rgba(102, 126, 234, 0.1); border-radius: 15px;">
+                    <h4>🎯 Similitud: ${similitud.toFixed(1)}%</h4>
+                </div>
+            `;
+
+            mostrarResultado(document.getElementById('resultado-comparacion'), resultadoHTML, "success");
+            
+            agregarAlHistorial('Comparación', {texto1: texto1.substring(0, 25), texto2: texto2.substring(0, 25)}, `Similitud: ${similitud.toFixed(1)}%`);
+        }
+
+        function calcularSimilitud(texto1, texto2) {
+            const set1 = new Set(texto1.toLowerCase().split(''));
+            const set2 = new Set(texto2.toLowerCase().split(''));
+            const intersection = new Set([...set1].filter(x => set2.has(x)));
+            const union = new Set([...set1, ...set2]);
+            
+            return (intersection.size / union.size) * 100;
+        }
+
+        function buscarPatrones() {
+            const texto = document.getElementById('texto-patrones').value;
+            const patron = document.getElementById('patron').value;
+            
+            if (!texto.trim() || !patron.trim()) {
+                mostrarResultado(document.getElementById('resultado-patrones'), "⚠️ Por favor, ingresa texto y patrón.", "error");
+                return;
+            }
+
+            try {
+                const regex = new RegExp(patron, 'gi');
+                const matches = texto.match(regex) || [];
+                
+                const resultadoHTML = `
+                    <h3>🔍 Resultados de búsqueda</h3>
+                    <p><strong>Patrón:</strong> ${patron}</p>
+                    <p><strong>Coincidencias encontradas:</strong> ${matches.length}</p>
+                    ${matches.length > 0 ? `<div style="margin-top: 15px;"><strong>Ejemplos:</strong><br>${matches.slice(0, 10).map(m => `"${m}"`).join(', ')}</div>` : ''}
+                `;
+
+                mostrarResultado(document.getElementById('resultado-patrones'), resultadoHTML, "success");
+                
+                agregarAlHistorial('Búsqueda de Patrones', {texto: texto.substring(0, 50), patron}, `${matches.length} coincidencias`);
+            } catch (error) {
+                mostrarResultado(document.getElementById('resultado-patrones'), "⚠️ Patrón de expresión regular inválido.", "error");
+            }
+        }
+
+        function patronesComunes() {
+            const patrones = [
+                { nombre: 'Números', patron: '\\d+', descripcion: 'Encuentra todos los números' },
+                { nombre: 'Emails', patron: '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}', descripcion: 'Encuentra direcciones de email' },
+                { nombre: 'Palabras largas', patron: '\\b\\w{7,}\\b', descripcion: 'Palabras de 7+ caracteres' },
+                { nombre: 'Mayúsculas', patron: '[A-Z]+', descripcion: 'Secuencias de mayúsculas' },
+                { nombre: 'Fechas', patron: '\\d{1,2}/\\d{1,2}/\\d{4}', descripcion: 'Fechas en formato DD/MM/YYYY' }
+            ];
+
+            let html = '<h3>📋 Patrones Comunes</h3>';
+            patrones.forEach(p => {
+                html += `
+                    <div style="margin: 10px 0; padding: 15px; background: #f8f9fa; border-radius: 10px; cursor: pointer;" onclick="document.getElementById('patron').value='${p.patron}'">
+                        <strong>${p.nombre}:</strong> ${p.descripcion}<br>
+                        <code style="background: #e9ecef; padding: 2px 6px; border-radius: 4px;">${p.patron}</code>
+                    </div>
+                `;
+            });
+
+            mostrarResultado(document.getElementById('resultado-patrones'), html, "info");
+        }
+
+        // Funciones de limpieza
+        function limpiarSimple() {
+            document.getElementById('texto-simple').value = '';
+            document.getElementById('caracter-simple').value = '';
+            document.getElementById('resultado-simple').innerHTML = '🎯 Ingresa texto y un carácter para comenzar el análisis';
+            document.getElementById('resultado-simple').className = 'result-card main-result';
+            document.getElementById('stats-simple').style.display = 'none';
+            document.getElementById('viz-simple').style.display = 'none';
+        }
+
+        function limpiarAvanzado() {
+            document.getElementById('texto-avanzado').value = '';
+            document.getElementById('resultado-avanzado').innerHTML = '📊 Realiza un análisis completo de tu texto';
+            document.getElementById('resultado-avanzado').className = 'result-card main-result';
+            document.getElementById('frecuencias-viz').style.display = 'none';
+        }
+
+        function limpiarComparacion() {
+            document.getElementById('texto1').value = '';
+            document.getElementById('texto2').value = '';
+            document.getElementById('resultado-comparacion').innerHTML = '⚖️ Compara dos textos para ver diferencias y similitudes';
+            document.getElementById('resultado-comparacion').className = 'result-card main-result';
+        }
+
+        function limpiarPatrones() {
+            document.getElementById('texto-patrones').value = '';
+            document.getElementById('patron').value = '';
+            document.getElementById('resultado-patrones').innerHTML = '🔍 Busca patrones específicos usando expresiones regulares';
+            document.getElementById('resultado-patrones').className = 'result-card main-result';
+        }
+
+        function limpiarHistorial() {
+            if (confirm('¿Estás seguro de que quieres limpiar todo el historial?')) {
+                historialAnalisis = [];
+                actualizarHistorial();
+                localStorage.removeItem('analizadorHistorial');
+            }
+        }
+
+        // Funciones de exportación y reporte
+        function generarReporte() {
+            const texto = document.getElementById('texto-avanzado').value;
+            
+            if (!texto.trim()) {
+                alert('Por favor, realiza primero un análisis completo.');
+                return;
+            }
+
+            const stats = analizarTextoCompleto(texto);
+            const fecha = new Date().toLocaleString();
+            
+            const reporte = `
+                <h3>📋 Reporte de Análisis de Texto</h3>
+                <p><strong>Fecha:</strong> ${fecha}</p>
+                <hr>
+                <h4>📊 Estadísticas Generales</h4>
+                <ul>
+                    <li>Total de caracteres: ${stats.caracteres}</li>
+                    <li>Total de palabras: ${stats.palabras}</li>
+                    <li>Líneas de texto: ${stats.lineas}</li>
+                    <li>Caracteres únicos: ${stats.caracteresUnicos}</li>
+                    <li>Densidad de texto: ${(stats.palabras / stats.lineas).toFixed(2)} palabras por línea</li>
+                </ul>
+                <h4>🔤 Top 10 Caracteres Más Frecuentes</h4>
+                <ul>
+                    ${Object.entries(stats.frecuencias)
+                        .sort((a, b) => b[1] - a[1])
+                        .slice(0, 10)
+                        .map(([char, count]) => `<li>'${char}': ${count} veces (${((count / Object.values(stats.frecuencias).reduce((a, b) => a + b, 0)) * 100).toFixed(1)}%)</li>`)
+                        .join('')}
+                </ul>
+            `;
+
+            document.getElementById('contenido-reporte').innerHTML = reporte;
+            document.getElementById('modal-reporte').style.display = 'block';
+        }
+
+        function cerrarModal() {
+            document.getElementById('modal-reporte').style.display = 'none';
+        }
+
+        function copiarReporte() {
+            const contenido = document.getElementById('contenido-reporte').innerText;
+            navigator.clipboard.writeText(contenido).then(() => {
+                alert('¡Reporte copiado al portapapeles!');
+            });
+        }
+
+        function descargarReporte() {
+            const contenido = document.getElementById('contenido-reporte').innerHTML;
+            const blob = new Blob([`
+                <!DOCTYPE html>
+                <html><head><title>Reporte de Análisis</title>
+                <style>body{font-family:Arial,sans-serif;margin:40px;}</style>
+                </head><body>${contenido}</body></html>
+            `], { type: 'text/html' });
+            
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `reporte-analisis-${Date.now()}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function exportarDatos() {
+            const datos = {
+                fecha: new Date().toISOString(),
+                historial: historialAnalisis,
+                version: '4.0'
+            };
+            
+            const blob = new Blob([JSON.stringify(datos, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `datos-analizador-${Date.now()}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function exportarHistorial() {
+            if (historialAnalisis.length === 0) {
+                alert('No hay datos en el historial para exportar.');
+                return;
+            }
+            
+            const csv = 'Fecha,Tipo,Datos,Resultado\n' + 
+                historialAnalisis.map(item => 
+                    `"${item.fecha}","${item.tipo}","${JSON.stringify(item.datos).replace(/"/g, '""')}","${item.resultado}"`
+                ).join('\n');
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `historial-analisis-${Date.now()}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Persistencia local
+        function guardarHistorialLocal() {
+            try {
+                localStorage.setItem('analizadorHistorial', JSON.stringify(historialAnalisis));
+            } catch (e) {
+                console.warn('No se pudo guardar el historial en localStorage');
+            }
+        }
+
+        function cargarHistorialLocal() {
+            try {
+                const historialGuardado = localStorage.getItem('analizadorHistorial');
+                if (historialGuardado) {
+                    historialAnalisis = JSON.parse(historialGuardado);
+                    actualizarHistorial();
+                }
+            } catch (e) {
+                console.warn('No se pudo cargar el historial desde localStorage');
+            }
+        }
+
+        // Eventos de teclado mejorados
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                switch (modoActual) {
+                    case 'simple':
+                        analizarSimple();
+                        break;
+                    case 'advanced':
+                        analizarCompleto();
+                        break;
+                    case 'comparison':
+                        compararTextos();
+                        break;
+                    case 'pattern':
+                        buscarPatrones();
+                        break;
+                }
+            }
+        });
+
+        // Cer

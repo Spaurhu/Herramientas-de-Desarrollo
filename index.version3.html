@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contador de Caracteres v2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 700px;
+            width: 100%;
+        }
+
+        h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #555;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .clear-btn {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+        }
+
+        .clear-btn:hover {
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.4);
+        }
+
+        #resultado3 {
+            margin-top: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 18px;
+            color: #333;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .success {
+            background: linear-gradient(135deg, #56c596, #27ae60);
+            color: white;
+            transform: scale(1.02);
+        }
+
+        .error {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .highlight-text {
+            background: rgba(102, 126, 234, 0.1);
+            padding: 2px 4px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: monospace;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🔤 Contador de Caracteres Pro</h2>
+        
+        <div class="input-group">
+            <label for="entrada">📝 Ingresa una frase:</label>
+            <input type="text" id="entrada" placeholder="Escribe una frase aquí">
+        </div>
+
+        <div class="input-group">
+            <label for="caracter">🎯 Carácter a contar:</label>
+            <input type="text" id="caracter" maxlength="1" placeholder="Ej: e">
+        </div>
+
+        <div class="button-group">
+            <button type="button" onclick="contarCaracter()">🔍 Contar</button>
+            <button type="button" class="clear-btn" onclick="limpiar()">🗑️ Limpiar</button>
+        </div>
+
+        <div id="resultado3"></div>
+        
+        <div class="stats" id="estadisticas" style="display: none;">
+            <div class="stat-card">
+                <div class="stat-number" id="total-chars">0</div>
+                <div class="stat-label">Total caracteres</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="total-words">0</div>
+                <div class="stat-label">Total palabras</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="char-percentage">0%</div>
+                <div class="stat-label">Porcentaje del carácter</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function contarLetra(cadena, letra) {
+            if (cadena.length === 0) {
+                return 0;
+            }
+            if (cadena[0].toLowerCase() === letra.toLowerCase()) {
+                return 1 + contarLetra(cadena.slice(1), letra);
+            } else {
+                return contarLetra(cadena.slice(1), letra);
+            }
+        }
+
+        function mostrarEstadisticas(frase, caracter, cantidad) {
+            const totalChars = frase.length;
+            const totalWords = frase.trim().split(/\s+/).filter(word => word.length > 0).length;
+            const percentage = totalChars > 0 ? ((cantidad / totalChars) * 100).toFixed(1) : 0;
+
+            document.getElementById('total-chars').textContent = totalChars;
+            document.getElementById('total-words').textContent = totalWords;
+            document.getElementById('char-percentage').textContent = percentage + '%';
+            document.getElementById('estadisticas').style.display = 'grid';
+        }
+
+        function resaltarCaracter(frase, caracter) {
+            return frase.replace(new RegExp(caracter, 'gi'), `<mark style="background: #ffeb3b; padding: 2px 4px; border-radius: 3px;">${caracter}</mark>`);
+        }
+
+        function contarCaracter() {
+            const frase = document.getElementById('entrada').value;
+            const caracter = document.getElementById('caracter').value;
+            const resultado = document.getElementById('resultado3');
+
+            if (!frase.trim()) {
+                resultado.innerHTML = "⚠️ Por favor, ingresa una frase.";
+                resultado.className = "error";
+                document.getElementById('estadisticas').style.display = 'none';
+                return;
+            }
+
+            if (caracter.length !== 1) {
+                resultado.innerHTML = "⚠️ Por favor, ingresa solo un carácter.";
+                resultado.className = "error";
+                document.getElementById('estadisticas').style.display = 'none';
+                return;
+            }
+
+            const cantidad = contarLetra(frase, caracter);
+            const fraseResaltada = resaltarCaracter(frase, caracter);
+            
+            resultado.innerHTML = `
+                <div>
+                    ✅ El carácter '<strong>${caracter}</strong>' aparece <strong>${cantidad}</strong> vez/veces
+                    <div class="highlight-text">${fraseResaltada}</div>
+                </div>
+            `;
+            resultado.className = "success";
+            
+            mostrarEstadisticas(frase, caracter, cantidad);
+        }
+
+        function limpiar() {
+            document.getElementById('entrada').value = '';
+            document.getElementById('caracter').value = '';
+            document.getElementById('resultado3').innerHTML = '';
+            document.getElementById('resultado3').className = '';
+            document.getElementById('estadisticas').style.display = 'none';
+        }
+
+        // Eventos de teclado
+        document.getElementById('entrada').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('caracter').focus();
+            }
+        });
+
+        document.getElementById('caracter').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                contarCaracter();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contador de Caracteres v1</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: block;
+            margin: 20px auto;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        #resultado3 {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 18px;
+            color: #333;
+            min-height: 20px;
+        }
+
+        .highlight {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🔤 Contador de Caracteres</h2>
+        
+        <div class="input-group">
+            <label for="entrada">Ingresa una frase:</label>
+            <input type="text" id="entrada" placeholder="Escribe una frase aquí">
+        </div>
+
+        <div class="input-group">
+            <label for="caracter">Ingresa el carácter que deseas contar:</label>
+            <input type="text" id="caracter" maxlength="1" placeholder="Ej: e">
+        </div>
+
+        <button type="button" onclick="contarCaracter()">🔍 Contar</button>
+        <div id="resultado3"></div>
+    </div>
+
+    <script>
+        function contarLetra(cadena, letra) {
+            if (cadena.length === 0) {
+                return 0;
+            }
+
+            if (cadena[0].toLowerCase() === letra.toLowerCase()) {
+                return 1 + contarLetra(cadena.slice(1), letra);
+            } else {
+                return contarLetra(cadena.slice(1), letra);
+            }
+        }
+
+        function contarCaracter() {
+            const frase = document.getElementById('entrada').value;
+            const caracter = document.getElementById('caracter').value;
+            const resultado = document.getElementById('resultado3');
+
+            if (!frase.trim()) {
+                resultado.innerHTML = "⚠️ Por favor, ingresa una frase.";
+                resultado.className = "";
+                return;
+            }
+
+            if (caracter.length !== 1) {
+                resultado.innerHTML = "⚠️ Por favor, ingresa solo un carácter.";
+                resultado.className = "";
+                return;
+            }
+
+            const cantidad = contarLetra(frase, caracter);
+            resultado.innerHTML = `✅ El carácter '<strong>${caracter}</strong>' aparece <strong>${cantidad}</strong> vez/veces en la frase.`;
+            resultado.className = "highlight";
+        }
+
+        // Permitir contar con Enter
+        document.getElementById('caracter').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                contarCaracter();
+            }
+        });
+    </script>
+</body>
+</html>
